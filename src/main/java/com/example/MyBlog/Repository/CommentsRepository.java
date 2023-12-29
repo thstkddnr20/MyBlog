@@ -2,7 +2,6 @@ package com.example.MyBlog.Repository;
 
 import com.example.MyBlog.Domain.Articles;
 import com.example.MyBlog.Domain.Comments;
-import com.example.MyBlog.Domain.Member;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
