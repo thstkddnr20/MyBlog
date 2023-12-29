@@ -66,8 +66,9 @@ class CommentsServiceTest {
         Comments reply1 = new Comments(articles, member, "nyaha", CommentShow.Y, comments);
         commentsRepository.save(reply1);
 
-        List<Comments> commentsWithReply = commentsRepository.findCommentsWithReply();
-        System.out.println("commentsWithReply = " + commentsWithReply);
+        List<Comments> commentsWithReply = commentsRepository.findCommentsWithReply(articles);
+        System.out.println("commentsWithReply size = " + commentsWithReply.size());
+
 
     }
 }
