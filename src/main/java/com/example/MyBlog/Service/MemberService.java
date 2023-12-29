@@ -2,7 +2,6 @@ package com.example.MyBlog.Service;
 
 import com.example.MyBlog.Domain.Friend;
 import com.example.MyBlog.Domain.Member;
-import com.example.MyBlog.Domain.MemberRole;
 import com.example.MyBlog.Repository.FriendRepository;
 import com.example.MyBlog.Repository.MemberRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -47,19 +46,31 @@ public class MemberService {
 
         friendRepository.save(friend1);
 
-        Friend friend2 = new Friend(); // member2의 요청도 만들었지만 arewefriend를 false로 설정하여 수락을 아직 안한 상태로 만듦
+        Friend friend2 = new Friend();
         friend2.setMember(member2);
         friend2.setFriend(member1);
         friend2.setAreWeFriend(false);
 
         friendRepository.save(friend2);
+
     }
 
-    public void acceptAddFriends(Long id1, Long id2) { // id1 -> id2 친구 추가 수락
+    public void acceptAddFriend(Long id1, Long id2) { // id1 -> id2 친구 추가 수락
         Member member1 = memberRepository.findById(id1).orElseThrow(() -> new EntityNotFoundException("유저가 없습니다."));
         Member member2 = memberRepository.findById(id2).orElseThrow(() -> new EntityNotFoundException("유저가 없습니다."));
 
-        Friend byMemberId = friendRepository.findByMemberId(member1.getId());
+        Friend byMemberId = friendRepository.findByMemberAndFriend(member1, member2);
         byMemberId.setAreWeFriend(true);
     }
+
+    public void denyAddFriend(Long id1, Long id2) { // id1 -> id2 친구 추가 거절
+        Member member1 = memberRepository.findById(id1).orElseThrow(() -> new EntityNotFoundException("유저가 없습니다."));
+        Member member2 = memberRepository.findById(id2).orElseThrow(() -> new EntityNotFoundException("유저가 없습니다."));
+
+        Friend byMemberId1 = friendRepository.findByMemberAndFriend(member1, member2);
+        Friend byMemberId2 = friendRepository.findByMemberAndFriend(member2, member1);
+        friendRepository.delete(byMemberId1);
+        friendRepository.delete(byMemberId2);
+    }
+
 }
