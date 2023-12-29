@@ -1,5 +1,6 @@
 package com.example.MyBlog.Service;
 
+import com.example.MyBlog.Domain.Friend;
 import com.example.MyBlog.Domain.Member;
 import com.example.MyBlog.Repository.MemberRepository;
 import org.junit.jupiter.api.Test;
@@ -8,7 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import java.util.List;
 
 @SpringBootTest
 @Transactional
@@ -41,8 +42,10 @@ class MemberServiceTest {
         memberRepository.save(member2);
 
         memberService.requestAddFriend(member.getId(), member1.getId());
-        memberService.acceptAddFriends(member1.getId(), member.getId());
+        memberService.denyAddFriend(member1.getId(), member.getId());
 
+        List<Friend> friendsList = member.getFriendsList();
+        System.out.println("friendsList = " + friendsList);
 
 
     }
