@@ -10,6 +10,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
@@ -46,12 +48,26 @@ class CommentsServiceTest {
         memberRepository.save(member);
         memberRepository.save(member1);
 
-        Comments comments = commentsService.createComments(articles.getId(), member, "AA", CommentShow.Y);
-        commentsService.updateComments(comments.getId(), "BB", CommentShow.N);
-
     }
 
     @Test
-    void updateComments() {
+    void CommentsWithReply() {
+        Articles articles = new Articles();
+        Member member = new Member("memberA","thstkddnr20@naver.com", "pass", MemberRole.USER);
+
+        articles.setThumbnail("a");
+        articles.setContent("bbbb");
+        articlesRepository.save(articles);
+        memberRepository.save(member);
+
+        Comments comments = new Comments(articles, member, "AA", CommentShow.Y);
+        commentsRepository.save(comments);
+
+        Comments reply1 = new Comments(articles, member, "nyaha", CommentShow.Y, comments);
+        commentsRepository.save(reply1);
+
+        List<Comments> commentsWithReply = commentsRepository.findCommentsWithReply();
+        System.out.println("commentsWithReply = " + commentsWithReply);
+
     }
 }
