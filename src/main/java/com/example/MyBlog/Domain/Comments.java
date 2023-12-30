@@ -43,12 +43,21 @@ public class Comments {
     @OneToMany(mappedBy = "parentComment")
     private List<Comments> reply;
 
-    public Comments(Articles articles, Member member, String content, CommentShow commentShow) {
+    public Comments(Articles articles, Member member, String content, CommentShow commentShow) { //댓글
         this.content = content;
         this.commentShow = commentShow;
         this.member = member;
         this.articles = articles;
         this.c_cdt = LocalDateTime.now();
+    }
+
+    public Comments(Articles articles, Member member, String content, CommentShow commentShow, Comments parentComment) { //대댓글
+        this.content = content;
+        this.commentShow = commentShow;
+        this.member = member;
+        this.articles = articles;
+        this.c_cdt = LocalDateTime.now();
+        this.parentComment = parentComment;
     }
 
     public Comments() {

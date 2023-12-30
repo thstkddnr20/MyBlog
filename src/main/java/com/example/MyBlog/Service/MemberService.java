@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -26,10 +27,10 @@ public class MemberService {
     }
 
     private void validateDuplicateMember(Member member) {
-        List<Member> byEmail = memberRepository.findByEmail(member.getEmail());
-        List<Member> byName = memberRepository.findByName(member.getName());
+        Optional<Member> byEmail = memberRepository.findByEmail(member.getEmail());
+        Optional<Member> byName = memberRepository.findByName(member.getName());
 
-        if (!byEmail.isEmpty() || !byName.isEmpty()){
+        if (byEmail.isPresent() || byName.isPresent()){
             throw new IllegalStateException("이메일 또는 이름이 이미 존재합니다");
         }
 
@@ -59,18 +60,50 @@ public class MemberService {
         Member member1 = memberRepository.findById(id1).orElseThrow(() -> new EntityNotFoundException("유저가 없습니다."));
         Member member2 = memberRepository.findById(id2).orElseThrow(() -> new EntityNotFoundException("유저가 없습니다."));
 
-        Friend byMemberId = friendRepository.findByMemberAndFriend(member1, member2);
-        byMemberId.setAreWeFriend(true);
+        Optional<Friend> byMemberId = friendRepository.findByMemberAndFriend(member1, member2);
+        if (byMemberId.isPresent()){
+            Friend friend = byMemberId.get();
+            friend.setAreWeFriend(true);
+        }
     }
 
     public void denyAddFriend(Long id1, Long id2) { // id1 -> id2 친구 추가 거절
         Member member1 = memberRepository.findById(id1).orElseThrow(() -> new EntityNotFoundException("유저가 없습니다."));
         Member member2 = memberRepository.findById(id2).orElseThrow(() -> new EntityNotFoundException("유저가 없습니다."));
 
-        Friend byMemberId1 = friendRepository.findByMemberAndFriend(member1, member2);
-        Friend byMemberId2 = friendRepository.findByMemberAndFriend(member2, member1);
-        friendRepository.delete(byMemberId1);
-        friendRepository.delete(byMemberId2);
+        Optional<Friend> byMemberId1 = friendRepository.findByMemberAndFriend(member1, member2);
+        Optional<Friend> byMemberId2 = friendRepository.findByMemberAndFriend(member2, member1);
+
+        if (byMemberId1.isPresent() && byMemberId2.isPresent()){
+            Friend friend1 = byMemberId1.get();
+            Friend friend2 = byMemberId2.get();
+            friendRepository.delete(friend1);
+            friendRepository.delete(friend2);
+        }
+    }
+
+    public boolean areWeFriend(Long id1, Long id2) {
+        Member member1 = memberRepository.findById(id1).orElseThrow(() -> new EntityNotFoundException("유저가 없습니다."));
+        Member member2 = memberRepository.findById(id2).orElseThrow(() -> new EntityNotFoundException("유저가 없습니다."));
+
+        Optional<Friend> byMemberId1 = friendRepository.findByMemberAndFriend(member1, member2);
+        Optional<Friend> byMemberId2 = friendRepository.findByMemberAndFriend(member2, member1);
+
+        if (byMemberId1.isPresent() && byMemberId2.isPresent()){
+            Friend friend1 = byMemberId1.get();
+            Friend friend2 = byMemberId2.get();
+
+            if (friend1.isAreWeFriend() && friend2.isAreWeFriend()){
+                return true;
+            }
+            else {
+                throw new IllegalStateException("친구 요청 중입니다");
+            }
+        }
+        else {
+            throw new IllegalStateException("친구가 아닙니다");
+        }
+
     }
 
 }

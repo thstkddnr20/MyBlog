@@ -86,6 +86,24 @@ public class ArticlesService {
         List<Articles> findArticles = articlesRepository.findAllByMemberId(memberId);
     }
 
+    public List<Articles> findArticlesByMember(Member member) {
+        List<Articles> articlesByMember = articlesRepository.findArticlesByMember(member);
+        if (!articlesByMember.isEmpty()) {
+            return articlesByMember;
+        }
+        else {
+            throw new IllegalStateException("해당 멤버의 게시물이 없습니다");
+        }
+    }
+    public List<Articles> findArticlesByTag(String tagName) { // Tag이름으로 Articles 모두 가져오기
+        if(!articlesRepository.findArticlesByTag(tagName).isEmpty()) {
+            return articlesRepository.findArticlesByTag(tagName);
+        }
+        else{
+            throw new IllegalStateException("해당 태그의 게시물이 없습니다");
+        }
+    }
+
 
 
 }

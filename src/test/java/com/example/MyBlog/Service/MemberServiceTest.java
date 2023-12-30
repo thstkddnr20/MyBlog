@@ -44,8 +44,8 @@ class MemberServiceTest {
         memberService.requestAddFriend(member.getId(), member1.getId());
         memberService.denyAddFriend(member1.getId(), member.getId());
 
-        List<Friend> friendsList = member.getFriendsList();
-        System.out.println("friendsList = " + friendsList);
+        boolean areWeFriend = memberService.areWeFriend(member1.getId(), member.getId());
+        System.out.println("areWeFriend = " + areWeFriend);
 
 
     }

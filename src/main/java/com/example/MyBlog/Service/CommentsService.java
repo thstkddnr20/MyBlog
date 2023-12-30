@@ -18,10 +18,7 @@ public class CommentsService {
     private final CommentsRepository commentsRepository;
     private final ArticlesRepository articlesRepository;
 
-    public Comments createComments(Long articlesId, Member member, String content, CommentShow commentShow){
-        Articles articles = articlesRepository.findById(articlesId).orElseThrow(()-> new EntityNotFoundException("게시물이 없습니다"));
-
-        Comments comments = new Comments(articles, member, content, commentShow);
+    public Comments createComments(Long articlesId, Comments comments){
         commentsRepository.save(comments);
         return comments;
     }
