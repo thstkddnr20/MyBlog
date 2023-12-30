@@ -27,10 +27,10 @@ public class MemberService {
     }
 
     private void validateDuplicateMember(Member member) {
-        List<Member> byEmail = memberRepository.findByEmail(member.getEmail());
-        List<Member> byName = memberRepository.findByName(member.getName());
+        Optional<Member> byEmail = memberRepository.findByEmail(member.getEmail());
+        Optional<Member> byName = memberRepository.findByName(member.getName());
 
-        if (!byEmail.isEmpty() || !byName.isEmpty()){
+        if (byEmail.isPresent() || byName.isPresent()){
             throw new IllegalStateException("이메일 또는 이름이 이미 존재합니다");
         }
 

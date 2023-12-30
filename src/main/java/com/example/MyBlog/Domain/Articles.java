@@ -68,5 +68,4 @@ public class Articles {
     public Articles() {
     }
 
-
 }

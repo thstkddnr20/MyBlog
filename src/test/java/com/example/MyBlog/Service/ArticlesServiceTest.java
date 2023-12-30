@@ -3,11 +3,14 @@ package com.example.MyBlog.Service;
 import com.example.MyBlog.Domain.*;
 import com.example.MyBlog.Repository.ArticlesRepository;
 import com.example.MyBlog.Repository.MemberRepository;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 
 @SpringBootTest
@@ -65,13 +68,16 @@ class ArticlesServiceTest {
         member.setEmail("thstkddnr20@naver.com");
         member.setPassword("pass");
 
-        Articles articles = new Articles("A", "hi", ArticleShow.Y, member, "A", "B", "B");
-        Articles articles1 = new Articles("B", "hihi", ArticleShow.Y, member, "A", "B", "B");
+        Articles articles = new Articles("A", "hi", ArticleShow.Y, member, "A", "B");
+        Articles articles1 = new Articles("B", "hihi", ArticleShow.Y, member, "A", "B", "C");
 
         memberRepository.save(member);
 
         articlesService.createArticlesWithTag(articles);
         articlesService.createArticlesWithTag(articles1);
+
+        List<Articles> c = articlesService.findArticlesByTag("D");
+        System.out.println("c = " + c);
 
     }
 
