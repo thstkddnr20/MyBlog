@@ -1,17 +1,16 @@
 package com.example.MyBlog.Domain;
 
+import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static jakarta.persistence.FetchType.EAGER;
 import static jakarta.persistence.FetchType.LAZY;
 
 @Entity
@@ -23,17 +22,19 @@ public class Articles {
     @GeneratedValue
     private Long id;
 
-    @NotNull
+    @Column(nullable = false)
     private String thumbnail;
 
-    @NotNull
+    @Column(nullable = false)
     private String content;
 
     @Enumerated(EnumType.STRING)
     private ArticleShow articleShow = ArticleShow.Y;
 
+    @Column(name = "updated_at")
     private LocalDateTime a_udt;
 
+    @Column(name = "created_at")
     private LocalDateTime a_cdt;
 
     @ManyToOne(fetch = LAZY)
@@ -53,16 +54,16 @@ public class Articles {
         this.content = content;
         this.articleShow = articleShow;
         this.member = member;
+        this.a_cdt = LocalDateTime.now();
     }
 
-    public Articles(String thumbnail, String content, ArticleShow articleShow, Member member, String... tagName) { //가변인자로 tag를 받는다.
+    public Articles(String thumbnail, String content, ArticleShow articleShow, Member member, List<String> tagName) { //가변인자로 tag를 받는다. 1.1 가변인자를 List로 변경
         this.thumbnail = thumbnail;
         this.content = content;
         this.articleShow = articleShow;
         this.member = member;
-        for (String s : tagName) {
-            getTags().add(s);
-        }
+        this.a_cdt = LocalDateTime.now();
+        getTags().addAll(tagName);
     }
 
     public Articles() {

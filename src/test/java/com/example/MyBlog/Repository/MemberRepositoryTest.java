@@ -25,9 +25,7 @@ class MemberRepositoryTest {
     @Test
     public void testFindAllFriends() {
 
-        Member member1 = new Member();
-        memberService.createMember(member1);
-        System.out.println("member1.getId() = " + member1.getId());
+
 
 
 
